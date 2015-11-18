@@ -62,6 +62,9 @@ def display_help():
     print
     print "QubitLab help..."
     print
+    print "Example of usage:"
+    print  "$ ./qubitlab.py -c teleportation -s 3"
+    print
 
 
 if __name__ == "__main__":
