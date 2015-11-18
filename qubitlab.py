@@ -1,11 +1,61 @@
 #!/usr/bin/env python
 
 from core.diagram import Diagram
+import sys
+import os
+import getopt
 
-print
-print "QubitLab"
-print
-diagram = Diagram()
-diagram.display('Quantum Teleportation Protocol', 'data/circuits/tele/tele_diagram.txt', 3)
-print
-print
+
+def main(argv):
+
+    try:
+        opts, args = getopt.getopt(argv, "c:s:o:h", ["circuit=", "output=", "step=", "help"])
+    except getopt.GetoptError:
+        print "[ERROR] Wrong parameters."
+        sys.exit(2)
+
+    step = None
+    circuit = None
+
+    for opt, value in opts:
+        if opt in ("-c", "--circuit"):
+            circuit = value
+            if not os.path.isdir("data/circuits/" + circuit):
+                print 'ERROR: Circuit "' + circuit + '" is not available.'
+                sys.exit(0)
+        if opt in ("-s", "--step"):
+            step = value
+        if opt in ("-o", "--output"):
+            sys.stdout = open(value, 'w')
+        if opt in ("-h", "--help"):
+            display_help()
+            sys.exit(0)
+
+    if circuit is None:
+        print 'ERROR: Circuit is required. Use "-c" or "--circuit" option.'
+        sys.exit(0)
+
+    if step is not None:
+        step = int(step)
+
+    print
+    print "QubitLab"
+    print
+    diagram = Diagram()
+    diagram.display('Quantum Teleportation Protocol', 'data/circuits/' + circuit + '/diagram.txt', step)
+    print
+    print
+
+
+def display_help():
+    print
+    print "QubitLab help..."
+    print
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+
+

@@ -25,13 +25,13 @@ class Diagram:
         steps_line = self.get_steps_line(file_path)
         steps_numb = self.count_steps(steps_line)
 
+        if active_step is None or active_step > steps_numb - 1:
+            active_step = steps_numb - 1
         if active_step <= 0:
-            active_step = 1
-        if active_step is None or active_step > steps_numb:
-            active_step = steps_numb
+            active_step = 0
 
         step_pos = -1
-        if active_step != steps_numb:
+        if active_step != steps_numb - 1:
             step_pos = self.get_step_pos(active_step, steps_line)
 
         active_color = self.colors['yellow']
@@ -40,7 +40,7 @@ class Diagram:
         no_circuit_color = self.colors['gray']
 
         print "{0}{1} (step {2} of {3}){4}\n".format(no_circuit_color, circuit_name, str(active_step),
-                                                     str(steps_numb), reset_color)
+                                                     str(steps_numb - 1), reset_color)
 
         with open(file_path) as f:
             for line in f:
