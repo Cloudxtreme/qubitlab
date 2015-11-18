@@ -21,33 +21,34 @@ class Diagram:
         for x in range(0, 255):
             print '\033[' + str(x) + 'm' + "CODE: " + str(x) + '\033[0m',
 
-    def display(self, file_path, active_step=None):
+    def display(self, circuit_name, file_path, active_step=None):
         steps_line = self.get_steps_line(file_path)
-        step_pos = self.get_step_pos(active_step, steps_line)
+        steps_numb = self.count_steps(steps_line)
+
+        if active_step <= 0:
+            active_step = 1
+        if active_step is None or active_step > steps_numb:
+            active_step = steps_numb
+
+        step_pos = -1
+        if active_step != steps_numb:
+            step_pos = self.get_step_pos(active_step, steps_line)
 
         active_color = self.colors['yellow']
         inactive_color = self.colors['reset']
         reset_color = self.colors['reset']
         no_circuit_color = self.colors['gray']
 
-        print no_circuit_color + "Step " + str(active_step) + reset_color
+        print "{0}{1} (step {2} of {3}){4}\n".format(no_circuit_color, circuit_name, str(active_step),
+                                                     str(steps_numb), reset_color)
 
         with open(file_path) as f:
-            if active_step is None:
-                for line in f:
-                    if self.check_if_is_no_circuit_line(line):
-                        print no_circuit_color + line.rstrip() + reset_color
-                    else:
-                        print active_color
-                        print line.rstrip()
-                        print reset_color
-            else:
-                for line in f:
-                    if self.check_if_is_no_circuit_line(line):
-                        print no_circuit_color + line.rstrip() + reset_color
-                    else:
-                        print "{0}{1}{2}{3}{4}{5}".format(active_color, line[:step_pos], reset_color, inactive_color,
-                                                          line[step_pos:].rstrip(), reset_color)
+            for line in f:
+                if self.check_if_is_no_circuit_line(line):
+                    print no_circuit_color + line.rstrip('\n') + reset_color
+                else:
+                    print "{0}{1}{2}{3}{4}{5}".format(active_color, line[:step_pos].rstrip('\n'), reset_color,
+                                                      inactive_color, line[step_pos:].rstrip('\n'), reset_color)
 
     def get_steps_line(self, file_path):
         with open(file_path) as f:
@@ -55,6 +56,11 @@ class Diagram:
                 if self.check_if_is_steps_line(line):
                     return line.rstrip()
         return ''
+
+    @staticmethod
+    def count_steps(steps_line):
+        results = re.findall('(\|\d+\s*)', steps_line)
+        return len(results)
 
     def check_if_is_no_circuit_line(self, line):
         if self.check_if_is_steps_line(line):
@@ -81,4 +87,4 @@ class Diagram:
 
     @staticmethod
     def get_step_pos(step, steps_line):
-        return re.search(("\|" + str(step) + "\s*(\||$)"), steps_line).start()
+        return re.search(("\|" + str(step) + "\s*(\||$)"), steps_line).end() - 1
