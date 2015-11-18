@@ -53,7 +53,7 @@ def main(argv):
     print
     print
     diagram = Diagram()
-    diagram.display('Quantum Teleportation Protocol', 'data/circuits/' + circuit + '/diagram.txt', step)
+    diagram.display(circuit_module.get_title(), 'data/circuits/' + circuit + '/diagram.txt', step)
     print
     print
 
@@ -63,7 +63,7 @@ def display_help():
     print "QubitLab help..."
     print
     print "Example of usage:"
-    print  "$ ./qubitlab.py -c teleportation -s 3"
+    print "$ ./qubitlab.py -c teleportation -s 3"
     print
 
 
