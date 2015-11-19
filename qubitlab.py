@@ -57,6 +57,9 @@ def main(argv):
     print
     print
 
+    # diagram.test_colors()
+    # print
+
 
 def display_help():
     print

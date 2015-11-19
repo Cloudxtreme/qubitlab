@@ -6,12 +6,15 @@ import re
 class Diagram:
     def __init__(self):
         self.colors = {
+            'invert': '\033[100m',
             'red': '\033[31m',
             'green': '\033[32m',
+            'green2': '\033[92m',
             'yellow': '\033[33m',
             'blue': '\033[34m',
             'violet': '\033[35m',
             'cyan': '\033[36m',
+            'cyan2': '\033[96m',
             'gray': '\033[90m',
             'reset': '\033[0m'
         }
@@ -34,9 +37,10 @@ class Diagram:
         if active_step != steps_numb - 1:
             step_pos = self.get_step_pos(active_step, steps_line)
 
-        active_color = self.colors['yellow']
+        active_color = self.colors['green2']
         inactive_color = self.colors['reset']
         reset_color = self.colors['reset']
+        active_no_circ_color = self.colors['invert']
         no_circuit_color = self.colors['gray']
 
         print "{0}{1} (step {2} of {3}){4}\n".format(no_circuit_color, circuit_name, str(active_step),
@@ -45,7 +49,9 @@ class Diagram:
         with open(file_path) as f:
             for line in f:
                 if self.check_if_is_no_circuit_line(line):
-                    print no_circuit_color + line.rstrip('\n') + reset_color
+                    # print no_circuit_color + line.rstrip('\n') + reset_color
+                    print "{0}{1}{2}{3}{4}{5}".format(active_no_circ_color, line[:step_pos].rstrip('\n'), reset_color,
+                                                      no_circuit_color, line[step_pos:].rstrip('\n'), reset_color)
                 else:
                     print "{0}{1}{2}{3}{4}{5}".format(active_color, line[:step_pos].rstrip('\n'), reset_color,
                                                       inactive_color, line[step_pos:].rstrip('\n'), reset_color)
