@@ -37,21 +37,22 @@ class Diagram:
         if active_step != steps_numb - 1:
             step_pos = self.get_step_pos(active_step, steps_line)
 
-        active_color = self.colors['green2']
+        active_color = self.colors['cyan']
         inactive_color = self.colors['reset']
         reset_color = self.colors['reset']
-        active_no_circ_color = self.colors['invert']
-        no_circuit_color = self.colors['gray']
+        active_dots_color = self.colors['invert']
+        steps_color = self.colors['gray']
 
-        print "{0}{1} (step {2} of {3}){4}\n".format(no_circuit_color, circuit_name, str(active_step),
+        print "{0}{1} (step {2} of {3}){4}\n".format(steps_color, circuit_name, str(active_step),
                                                      str(steps_numb - 1), reset_color)
 
         with open(file_path) as f:
             for line in f:
-                if self.check_if_is_no_circuit_line(line):
-                    # print no_circuit_color + line.rstrip('\n') + reset_color
-                    print "{0}{1}{2}{3}{4}{5}".format(active_no_circ_color, line[:step_pos].rstrip('\n'), reset_color,
-                                                      no_circuit_color, line[step_pos:].rstrip('\n'), reset_color)
+                if self.check_if_is_steps_line(line):
+                    print steps_color + line.rstrip('\n') + reset_color
+                elif self.check_if_is_dots_line(line):
+                    print "{0}{1}{2}{3}{4}{5}".format(active_dots_color, line[:step_pos].rstrip('\n'), reset_color,
+                                                      steps_color, line[step_pos:].rstrip('\n'), reset_color)
                 else:
                     print "{0}{1}{2}{3}{4}{5}".format(active_color, line[:step_pos].rstrip('\n'), reset_color,
                                                       inactive_color, line[step_pos:].rstrip('\n'), reset_color)
@@ -67,13 +68,6 @@ class Diagram:
     def count_steps(steps_line):
         results = re.findall('(\|\d+\s*)', steps_line)
         return len(results)
-
-    def check_if_is_no_circuit_line(self, line):
-        if self.check_if_is_steps_line(line):
-            return True
-        if self.check_if_is_dots_line(line):
-            return True
-        return False
 
     @staticmethod
     def check_if_is_steps_line(line):
