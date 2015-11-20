@@ -1,0 +1,12 @@
+TODO:
+
+    - new features
+        - cache for simulation results and option -r or --reset to reset cache data for given simulation
+        - valid input parameters
+
+    - refactor
+        - split code to classes and methods
+        - use the best names for classes methods and variables
+        - use short methods
+        - use min number of method parameters
+        - do not modify parameters in methods
