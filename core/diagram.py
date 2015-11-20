@@ -6,7 +6,7 @@ import re
 class Diagram:
     def __init__(self):
         self.colors = {
-            'invert': '\033[100m',
+            'invert': '\033[46m',
             'red': '\033[31m',
             'green': '\033[32m',
             'green2': '\033[92m',
