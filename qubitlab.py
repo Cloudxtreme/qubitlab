@@ -40,18 +40,22 @@ def main(argv):
         step = int(step)
 
     circuit_module = importlib.import_module("data.circuits." + circuit + ".module")
+    step_results = circuit_module.get_results_for_step(step)
 
     print
     print "== Quantum state =="
     print
-    print circuit_module.get_quantum_state_for_step(step)
+    print step_results['quantum_state'].replace('> +', '>\n+')
     print
     print
-    print "== Measure results =="
-    print
-    print circuit_module.get_measure_results_for_step(step)
-    print
-    print
+
+    if None is not step_results['measure_results']:
+        print "== Measure results =="
+        print
+        print step_results['measure_results'].replace('> +', '>\n+')
+        print
+        print
+
     diagram = Diagram()
     diagram.display(circuit_module.get_title(), 'data/circuits/' + circuit + '/diagram.txt', step)
     print
