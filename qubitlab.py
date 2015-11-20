@@ -10,13 +10,14 @@ import importlib
 def main(argv):
 
     try:
-        opts, args = getopt.getopt(argv, "c:s:o:h", ["circuit=", "output=", "step=", "help"])
+        opts, args = getopt.getopt(argv, "c:s:o:hlr", ["help", "list"])
     except getopt.GetoptError:
         print "[ERROR] Wrong parameters."
         sys.exit(2)
 
     step = None
     circuit = None
+    reset = False
 
     for opt, value in opts:
         if opt in ("-c", "--circuit"):
@@ -24,23 +25,31 @@ def main(argv):
             if not os.path.isdir("data/circuits/" + circuit):
                 print 'ERROR: Circuit "' + circuit + '" is not available.'
                 sys.exit(0)
-        if opt in ("-s", "--step"):
+        if opt in ("-r"):
+            reset = True
+        if opt in ("-s"):
             step = value
-        if opt in ("-o", "--output"):
+        if opt in ("-o"):
             sys.stdout = open(value, 'w')
         if opt in ("-h", "--help"):
             display_help()
             sys.exit(0)
+        if opt in ("-l", "--list"):
+            display_circuit_list()
+            sys.exit(0)
 
     if circuit is None:
-        print 'ERROR: Circuit is required. Use "-c" or "--circuit" option.'
+        print 'ERROR: Option "-c <circuit>" is required or "-h" (help).'
         sys.exit(0)
 
     if step is not None:
         step = int(step)
 
-    circuit_module = importlib.import_module("data.circuits." + circuit + ".module")
-    step_results = circuit_module.get_results_for_step(step)
+    circuit_package = importlib.import_module("data.circuits." + circuit + "." + circuit + "_module")
+    circuit_class = getattr(circuit_package, circuit.capitalize() + 'Module')
+    circuit_module = circuit_class()
+
+    step_results = circuit_module.get_results_for_step(step, reset)
 
     print
     print "== Quantum state =="
@@ -57,7 +66,7 @@ def main(argv):
         print
 
     diagram = Diagram()
-    diagram.display(circuit_module.get_title(), 'data/circuits/' + circuit + '/diagram.txt', step)
+    diagram.display(circuit_module.get_title(), 'data/circuits/' + circuit + '/' + circuit + '_diagram.txt', step)
     print
     print
 
@@ -67,10 +76,29 @@ def main(argv):
 
 def display_help():
     print
-    print "QubitLab help..."
+    print "== QubitLab help =="
+    print
+    print "Usage:"
+    print "$ ./qubitlab.py [options]"
+    print
+    print "Available options:"
+    print "\t-h, --help             Show help."
+    print "\t-l, --list             List of available circuits."
+    print "\t-c <circuit_name>      Specify circuit. Required if -h and -l option are not used."
+    print "\t-s <step>              Step number."
+    print "\t-r                     Reset simulation results (clear cache for given circuit)."
+    print "\t-o <file_name>         Specify output file."
     print
     print "Example of usage:"
-    print "$ ./qubitlab.py -c teleportation -s 3"
+    print "$ ./qubitlab.py -c teleportation -s 5 -r"
+    print
+
+
+def display_circuit_list():
+    print
+    print "== QubitLab circuits =="
+    print
+    print "teleportation"
     print
 
 

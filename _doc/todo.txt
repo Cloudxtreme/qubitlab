@@ -1,10 +1,13 @@
 TODO:
 
-    - new features
-        - cache for simulation results and option -r or --reset to reset cache data for given simulation
+    - new features and improvements
+        - dynamic circuit list
         - valid input parameters
+        - show input data (in step 0)
+        - new circuits
 
     - refactor
+        - Module parent class
         - split code to classes and methods
         - use the best names for classes methods and variables
         - use short methods
